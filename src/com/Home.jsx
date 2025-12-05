@@ -47,8 +47,8 @@ function Home(){
         setStudents(sorted);
     };
     const filter =()=>{
-        reSet();
-       const newar =  students.filter((a) => a.gpa>=filterValue);
+
+       const newar =  studentData.filter((a) => a.gpa>=filterValue);
         setStudents(newar);
 
     }
