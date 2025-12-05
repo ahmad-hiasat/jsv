@@ -4,7 +4,7 @@ import studentData from "../data/student.json";
 import Student from "./Student.jsx";
 
 function Home(){
-
+    const [data, setData] = useState(studentData);
     const [students, setStudents] = useState(studentData);
     const [filterValue, setFilterValue] = useState(0);
     const sortAZ = () => {
@@ -15,13 +15,14 @@ function Home(){
     };
     const setOrder = () => {
 
-        const sortedArray = [...studentData].sort((a, b) => b.gpa - a.gpa);
+        const sortedArray = [...data].sort((a, b) => b.gpa - a.gpa);
 
         const withOrder = sortedArray.map((student, index) => ({
             ...student,
             order: index + 1,
         }));
 
+        setData(withOrder);
         setStudents(withOrder);
     };
 
@@ -48,15 +49,17 @@ function Home(){
     };
     const filter =()=>{
 
-       const newar =  studentData.filter((a) => a.gpa>=filterValue);
+
+       const newar =  data.filter((a) => a.gpa>=filterValue);
         setStudents(newar);
 
     }
     const reSet=()=>{
-        setStudents(studentData)
+        setStudents(data)
         setOrder()
     }
     useEffect(()=>{
+        setData(studentData);
         setOrder()
     } , [])
     return (

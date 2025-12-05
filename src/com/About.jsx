@@ -29,7 +29,6 @@ function About() {
                 </div>
             </div>
 
-            {/* الفقرة تحت الأعضاء هون */}
             <p className="project-details">
                 This project is designed to streamline how student information and grades are managed.
                 It allows instructors to sort students alphabetically, compare them based on GPA, and apply
