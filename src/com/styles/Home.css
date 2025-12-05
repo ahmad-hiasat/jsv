@@ -1,0 +1,35 @@
+@media (min-width: 586px) {
+    .students {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, auto);
+        gap: 15px;
+        justify-content: center;
+        align-content: flex-start;
+        padding-top: 20px;
+        position: relative;
+        top: 10vh;
+    }
+
+}
+
+.buttons-area{
+    width: 100%;
+    max-width: 450px;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 5vh;
+}
+@media (max-width: 585px) {
+.students{
+    position: relative;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(1, auto);
+    top: 10vh;
+
+
+}}
