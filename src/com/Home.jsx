@@ -56,11 +56,13 @@ function Home(){
     }
     const reSet=()=>{
         setStudents(data)
-        setOrder()
+
     }
     useEffect(()=>{
         setData(studentData);
         setOrder()
+
+
     } , [])
     return (
         <>

@@ -13,16 +13,7 @@
 
 }
 
-.buttons-area{
-    width: 100%;
-    max-width: 450px;
-    display: flex;
-    justify-content: center;
-    position: relative;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 5vh;
-}
+
 @media (max-width: 585px) {
 .students{
     position: relative;
@@ -33,3 +24,63 @@
 
 
 }}
+.buttons-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    justify-content: center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 5vh;
+    width: 100%;
+    max-width: 450px;
+}
+
+.buttons-area button {
+    background-color: #007BFF;
+    color: #ffffff;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .2s ease, transform .2s ease;
+}
+
+.buttons-area button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.buttons-area button:active {
+    transform: translateY(0px);
+}
+
+.buttons-area input {
+    padding: 10px 14px;
+    width: 120px;
+    border-radius: 8px;
+    border: 1px solid #CED4DA;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.buttons-area input:focus {
+    border-color: #007BFF;
+    box-shadow: 0 0 5px rgba(0,123,255,.5);
+}
+
+@media (max-width: 600px) {
+    .buttons-area {
+        justify-content: center;
+    }
+    .buttons-area input {
+        width: 100%;
+    }
+}
+
