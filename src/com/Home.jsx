@@ -13,9 +13,7 @@ function Home() {
             try {
                 const signRes = await fetch(
                     "https://jsv-back-end.onrender.com/api/isSign",
-                    {
-                        credentials: "include",
-                    }
+                    { credentials: "include" }
                 );
 
                 if (signRes.status !== 200) {
@@ -33,16 +31,21 @@ function Home() {
 
                 const readRes = await fetch(
                     "https://jsv-back-end.onrender.com/api/read",
-                    {
-                        credentials: "include",
-                    }
+                    { credentials: "include" }
                 );
 
                 const studentsData = await readRes.json();
-                setData(studentsData);
-                setStudents(studentsData);
 
-                for (const student of studentsData) {
+                const mapped = studentsData.map((s) => ({
+                    name: s.studentName,
+                    gpa: s.studentGpa,
+                    student_id: s.studentID,
+                }));
+
+                setData(mapped);
+                setStudents(mapped);
+
+                for (const student of mapped) {
                     await fetch(
                         `https://jsv-back-end.onrender.com/api/delete/${student.student_id}`,
                         {
@@ -60,9 +63,9 @@ function Home() {
                                 "Content-Type": "application/json",
                             },
                             body: JSON.stringify({
-                                name: student.name,
-                                gpa: student.gpa,
-                                student_id: student.student_id,
+                                studentName: student.name,
+                                studentGpa: student.gpa,
+                                studentID: student.student_id,
                             }),
                         }
                     );
@@ -76,8 +79,8 @@ function Home() {
                                 "Content-Type": "application/json",
                             },
                             body: JSON.stringify({
-                                name: student.name,
-                                gpa: student.gpa,
+                                studentName: student.name,
+                                studentGpa: student.gpa,
                             }),
                         }
                     );
