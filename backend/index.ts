@@ -8,13 +8,16 @@ import errorHandler from "./errorHandel";
 import successfully from "./class/successfully";
 
 dotenv.config();
-
 const app = express();
 
 app.use(cors({
     origin: "https://jsv-ev14.onrender.com",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -42,6 +45,7 @@ app.use("/api", api);
 
 app.use(errorHandler);
 
-app.listen(3001, () => {
-    console.log("listening on port 3001");
+
+app.listen(process.env.PORT || 3001, () => {
+    console.log("server running");
 });

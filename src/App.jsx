@@ -9,7 +9,7 @@ import Register from "./com/Register.jsx";
 import About from "./com/About.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
     <>
