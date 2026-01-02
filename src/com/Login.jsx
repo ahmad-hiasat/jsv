@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './styles/Login.css';
 
 function Login() {
-    const [email, setEmail] = useState('');
+    const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
 
     const handleSubmit = async (e) => {
@@ -40,11 +40,11 @@ function Login() {
 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Email</label>
+                        <label>username</label>
                         <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type={'text'}
+                            value={username}
+                            onChange={(e) => setUserName(e.target.value)}
                             required
                         />
                     </div>
