@@ -38,10 +38,6 @@ function NavBar() {
         { name: "about", to: "/about" },
     ];
 
-    if (isSigned === true) {
-        navItems.push({ name: "sign-out", action: signOut });
-    }
-
     if (isSigned === false) {
         navItems.push(
             { name: "login", to: "/login" },
@@ -49,12 +45,16 @@ function NavBar() {
         );
     }
 
+    if (isSigned === true) {
+        navItems.push({ name: "sign-out", action: signOut });
+    }
+
     return (
         <div className="nav">
             <p className="JSV">JSV</p>
 
             <ul className="list">
-                {navItems.map((item, index) => (
+                {[...navItems].reverse().map((item, index) => (
                     <li key={index}>
                         {item.to ? (
                             <Link to={item.to} className="router_name">
