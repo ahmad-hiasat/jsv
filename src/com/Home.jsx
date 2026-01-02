@@ -8,6 +8,10 @@ function Home() {
     const [filterValue, setFilterValue] = useState(0);
     const [isSigned, setIsSigned] = useState(null);
 
+    const [newName, setNewName] = useState("");
+    const [newGpa, setNewGpa] = useState("");
+    const [newId, setNewId] = useState("");
+
     useEffect(() => {
         const run = async () => {
             try {
@@ -15,11 +19,6 @@ function Home() {
                     "https://jsv-back-end.onrender.com/api/isSign",
                     { credentials: "include" }
                 );
-
-                if (signRes.status !== 200) {
-                    setIsSigned(false);
-                    return;
-                }
 
                 const signData = await signRes.json();
                 if (!signData.isSign) {
@@ -44,47 +43,6 @@ function Home() {
 
                 setData(mapped);
                 setStudents(mapped);
-
-                for (const student of mapped) {
-                    await fetch(
-                        `https://jsv-back-end.onrender.com/api/delete/${student.student_id}`,
-                        {
-                            method: "DELETE",
-                            credentials: "include",
-                        }
-                    );
-
-                    await fetch(
-                        "https://jsv-back-end.onrender.com/api/create",
-                        {
-                            method: "POST",
-                            credentials: "include",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                studentName: student.name,
-                                studentGpa: student.gpa,
-                                studentID: student.student_id,
-                            }),
-                        }
-                    );
-
-                    await fetch(
-                        `https://jsv-back-end.onrender.com/api/update/${student.student_id}`,
-                        {
-                            method: "PUT",
-                            credentials: "include",
-                            headers: {
-                                "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({
-                                studentName: student.name,
-                                studentGpa: student.gpa,
-                            }),
-                        }
-                    );
-                }
             } catch {
                 setIsSigned(false);
             }
@@ -92,6 +50,41 @@ function Home() {
 
         run();
     }, []);
+
+    const addStudent = async () => {
+        if (!newName || !newGpa || !newId) return;
+
+        const res = await fetch(
+            "https://jsv-back-end.onrender.com/api/create",
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    studentName: newName,
+                    studentGpa: Number(newGpa),
+                    studentID: newId,
+                }),
+            }
+        );
+
+        if (res.ok) {
+            const newStudent = {
+                name: newName,
+                gpa: Number(newGpa),
+                student_id: newId,
+            };
+
+            setData([...data, newStudent]);
+            setStudents([...students, newStudent]);
+
+            setNewName("");
+            setNewGpa("");
+            setNewId("");
+        }
+    };
 
     const sortAZ = () =>
         setStudents([...students].sort((a, b) => a.name.localeCompare(b.name)));
@@ -120,6 +113,27 @@ function Home() {
 
     return (
         <>
+            <div className="buttons-area">
+                <input
+                    placeholder="Student Name"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                />
+                <input
+                    type="number"
+                    step={0.1}
+                    placeholder="GPA"
+                    value={newGpa}
+                    onChange={(e) => setNewGpa(e.target.value)}
+                />
+                <input
+                    placeholder="Student ID"
+                    value={newId}
+                    onChange={(e) => setNewId(e.target.value)}
+                />
+                <button onClick={addStudent}>Add Student</button>
+            </div>
+
             <div className="buttons-area">
                 <button onClick={sortAZ}>Name A → Z</button>
                 <button onClick={sortZA}>Name Z → A</button>
