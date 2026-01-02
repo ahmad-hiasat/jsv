@@ -66,7 +66,6 @@ function Home() {
                     studentName: newName,
                     studentGpa: Number(newGpa),
                     studentID: newId,
-                    userID:userID
                 }),
             }
         );
