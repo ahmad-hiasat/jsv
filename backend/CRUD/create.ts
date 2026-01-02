@@ -16,7 +16,7 @@ router.post("/", async (req, res, next) => {
             studentGpa: body.studentGpa,
             studentName: body.studentName,
             studentID: body.studentID,
-            user: userId,
+            userID: userId,
         });
         await newData.save();
         return res.status(201).json(newData);
