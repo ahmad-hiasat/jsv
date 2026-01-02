@@ -7,70 +7,90 @@ function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
         if (password !== confirmPassword) {
             alert('Passwords do not match!');
             return;
         }
-        alert('Registration feature coming soon!');
+
+        try {
+            const res = await fetch(
+                'https://jsv-back-end.onrender.com/api/register',
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: name,
+                        email: email,
+                        password: password,
+                    }),
+                }
+            );
+
+            const data = await res.json();
+            alert(data.message);
+
+        } catch (err) {
+            console.error(err);
+            alert('Registration failed');
+        }
     };
 
     return (
         <div className="register-container">
             <div className="register-box">
                 <h2>Register</h2>
+
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Full Name</label>
-                        <input 
-                            type="text" 
+                        <label>User name</label>
+                        <input
+                            type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="Enter your name"
                             required
                         />
                     </div>
 
                     <div className="form-group">
                         <label>Email</label>
-                        <input 
-                            type="email" 
+                        <input
+                            type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter your email"
                             required
                         />
                     </div>
 
                     <div className="form-group">
                         <label>Password</label>
-                        <input 
-                            type="password" 
+                        <input
+                            type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter your password"
                             required
                         />
                     </div>
 
                     <div className="form-group">
                         <label>Confirm Password</label>
-                        <input 
-                            type="password" 
+                        <input
+                            type="password"
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Confirm your password"
                             required
                         />
                     </div>
 
-                    <button type="submit" className="register-btn">Register</button>
+                    <button type="submit" className="register-btn">
+                        Register
+                    </button>
                 </form>
-                
-                <p className="login-link">
-                    Already have an account? <a href="/login">Login here</a>
-                </p>
             </div>
         </div>
     );
