@@ -1,69 +1,120 @@
-import {useEffect, useState} from "react";
-import './styles/Home.css'
-import studentData from "../data/student.json";
+import { useEffect, useState } from "react";
+import "./styles/Home.css";
 import Student from "./Student.jsx";
 
-function Home(){
-    const [data, setData] = useState(studentData);
-    const [students, setStudents] = useState(studentData);
+function Home() {
+    const [data, setData] = useState([]);
+    const [students, setStudents] = useState([]);
     const [filterValue, setFilterValue] = useState(0);
-    const sortAZ = () => {
-        const sorted = [...students].sort((a, b) =>
-            a.name.localeCompare(b.name)
-        );
-        setStudents(sorted);
-    };
-    const setOrder = () => {
+    const [isSigned, setIsSigned] = useState(null);
 
-        const sortedArray = [...data].sort((a, b) => b.gpa - a.gpa);
+    useEffect(() => {
+        const run = async () => {
+            try {
+                const signRes = await fetch(
+                    "https://jsv-back-end.onrender.com/api/isSign",
+                    {
+                        credentials: "include",
+                    }
+                );
 
-        const withOrder = sortedArray.map((student, index) => ({
-            ...student,
-            order: index + 1,
-        }));
+                if (signRes.status !== 200) {
+                    setIsSigned(false);
+                    return;
+                }
 
-        setData(withOrder);
-        setStudents(withOrder);
-    };
+                const signData = await signRes.json();
+                if (!signData.isSign) {
+                    setIsSigned(false);
+                    return;
+                }
 
+                setIsSigned(true);
 
-    const sortZA = () => {
-        const sorted = [...students].sort((a, b) =>
-            b.name.localeCompare(a.name)
-        );
-        setStudents(sorted);
-    };
+                const readRes = await fetch(
+                    "https://jsv-back-end.onrender.com/api/read",
+                    {
+                        credentials: "include",
+                    }
+                );
 
-    const sortGpaHigh = () => {
-        const sorted = [...students].sort((a, b) =>
-            b.gpa - a.gpa
-        );
-        setStudents(sorted);
-    };
+                const studentsData = await readRes.json();
+                setData(studentsData);
+                setStudents(studentsData);
 
-    const sortGpaLow = () => {
-        const sorted = [...students].sort((a, b) =>
-            a.gpa - b.gpa
-        );
-        setStudents(sorted);
-    };
-    const filter =()=>{
+                for (const student of studentsData) {
+                    await fetch(
+                        `https://jsv-back-end.onrender.com/api/delete/${student.student_id}`,
+                        {
+                            method: "DELETE",
+                            credentials: "include",
+                        }
+                    );
 
+                    await fetch(
+                        "https://jsv-back-end.onrender.com/api/create",
+                        {
+                            method: "POST",
+                            credentials: "include",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                name: student.name,
+                                gpa: student.gpa,
+                                student_id: student.student_id,
+                            }),
+                        }
+                    );
 
-       const newar =  data.filter((a) => a.gpa>=filterValue);
-        setStudents(newar);
+                    await fetch(
+                        `https://jsv-back-end.onrender.com/api/update/${student.student_id}`,
+                        {
+                            method: "PUT",
+                            credentials: "include",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                name: student.name,
+                                gpa: student.gpa,
+                            }),
+                        }
+                    );
+                }
+            } catch {
+                setIsSigned(false);
+            }
+        };
 
+        run();
+    }, []);
+
+    const sortAZ = () =>
+        setStudents([...students].sort((a, b) => a.name.localeCompare(b.name)));
+
+    const sortZA = () =>
+        setStudents([...students].sort((a, b) => b.name.localeCompare(a.name)));
+
+    const sortGpaHigh = () =>
+        setStudents([...students].sort((a, b) => b.gpa - a.gpa));
+
+    const sortGpaLow = () =>
+        setStudents([...students].sort((a, b) => a.gpa - b.gpa));
+
+    const filter = () =>
+        setStudents(data.filter((s) => s.gpa >= filterValue));
+
+    const reSet = () => setStudents(data);
+
+    if (isSigned === null) {
+        return <h2 className="students">Loading...</h2>;
     }
-    const reSet=()=>{
-        setStudents(data)
 
+    if (!isSigned) {
+        return <h2 className="students">لازم تسجل دخول</h2>;
     }
-    useEffect(()=>{
-        setData(studentData);
-        setOrder()
 
-
-    } , [])
     return (
         <>
             <div className="buttons-area">
@@ -71,13 +122,22 @@ function Home(){
                 <button onClick={sortZA}>Name Z → A</button>
                 <button onClick={sortGpaHigh}>GPA High → Low</button>
                 <button onClick={sortGpaLow}>GPA Low → High</button>
-                <input type={"number"} step={0.1} max={4} min={0}  placeholder={"filter gpa"}  onChange={(t)=> setFilterValue(t.target.value)} />
-                <button onClick={filter} >filter</button>
+
+                <input
+                    type="number"
+                    step={0.1}
+                    max={4}
+                    min={0}
+                    placeholder="filter gpa"
+                    onChange={(e) => setFilterValue(Number(e.target.value))}
+                />
+
+                <button onClick={filter}>filter</button>
                 <button onClick={reSet}>reSet</button>
             </div>
 
             <div className="students">
-                {students.map(user => (
+                {students.map((user) => (
                     <div key={user.student_id}>
                         <Student user={user} />
                     </div>
