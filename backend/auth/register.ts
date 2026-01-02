@@ -14,7 +14,7 @@ router.post('/' ,async (req,res,next)=>{
         const newUser = new users({username:body.username , password:hashedPassword});
         await newUser.save();
         (req.session as any).userId = newUser._id;
-        return res.status(successfully.created('').status).json(successfully.created('done create user'));
+        return res.status(successfully.created('').status).json(successfully.created('done create user').json);
     }catch(e){
         next(e)
     }
