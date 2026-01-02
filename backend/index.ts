@@ -10,30 +10,37 @@ import successfully from "./class/successfully";
 dotenv.config();
 const app = express();
 
-app.use(cors({
-    origin: "https://jsv-ev14.onrender.com",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.set("trust proxy", 1);
 
+app.use(
+    cors({
+        origin: "https://jsv-ev14.onrender.com",
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    })
+);
 
-
+app.options("/api/*", cors());
 
 app.use(express.json());
 
-app.use(session({
-    secret: process.env.secret_key_session || "secret_key",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-    },
-}));
+app.use(
+    session({
+        name: "jsv.sid",
+        secret: process.env.secret_key_session || "secret_key",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+        },
+    })
+);
 
-mongoose.connect(process.env.MONGO_URL!)
+mongoose
+    .connect(process.env.MONGO_URL!)
     .then(() => console.log("Connected to MongoDB"));
 
 app.get("/", (req, res) => {
@@ -44,8 +51,8 @@ app.get("/", (req, res) => {
 
 app.use("/api", api);
 
-app.use(errorHandler);
 
+app.use(errorHandler);
 
 app.listen(process.env.PORT || 3001, () => {
     console.log("server running");
