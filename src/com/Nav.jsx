@@ -13,7 +13,6 @@ function NavBar() {
                     "https://jsv-back-end.onrender.com/api/isSign",
                     { credentials: "include" }
                 );
-
                 const data = await res.json();
                 setIsSigned(data.isSign);
             } catch {
@@ -25,49 +24,49 @@ function NavBar() {
     }, []);
 
     const signOut = async () => {
-        await fetch(
-            "https://jsv-back-end.onrender.com/api/sing-out",
-            {
-                method: "POST",
-                credentials: "include",
-            }
-        );
+        await fetch("https://jsv-back-end.onrender.com/api/sing-out", {
+            method: "POST",
+            credentials: "include",
+        });
 
         setIsSigned(false);
         navigate("/login");
     };
+
+    const navItems = [
+        { name: "home", to: "/" },
+        { name: "about", to: "/about" },
+    ];
+
+    if (isSigned === false) {
+        navItems.push(
+            { name: "login", to: "/login" },
+            { name: "register", to: "/register" }
+        );
+    }
+
+    if (isSigned === true) {
+        navItems.push({ name: "signout", action: signOut });
+    }
 
     return (
         <div className="nav">
             <p className="JSV">JSV</p>
 
             <ul className="list">
-                <li>
-                    <Link to="/" className="router_name">home</Link>
-                </li>
-
-                <li>
-                    <Link to="/about" className="router_name">about</Link>
-                </li>
-
-                {!isSigned && (
-                    <>
-                        <li>
-                            <Link to="/login" className="router_name">login</Link>
-                        </li>
-                        <li>
-                            <Link to="/register" className="router_name">register</Link>
-                        </li>
-                    </>
-                )}
-
-                {isSigned && (
-                    <li>
-                        <button onClick={signOut} className="router_name">
-                            signout
-                        </button>
+                {navItems.map((item, index) => (
+                    <li key={index}>
+                        {item.to ? (
+                            <Link to={item.to} className="router_name">
+                                {item.name}
+                            </Link>
+                        ) : (
+                            <span onClick={item.action} className="router_name">
+                {item.name}
+              </span>
+                        )}
                     </li>
-                )}
+                ))}
             </ul>
         </div>
     );
