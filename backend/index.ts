@@ -16,12 +16,8 @@ app.use(
     cors({
         origin: "https://jsv-ev14.onrender.com",
         credentials: true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
-
-app.options("/api/*", cors());
 
 app.use(express.json());
 
@@ -50,7 +46,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", api);
-
 
 app.use(errorHandler);
 
