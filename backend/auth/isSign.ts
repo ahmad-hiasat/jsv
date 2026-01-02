@@ -12,7 +12,7 @@ router.get('/' , async (req,res,next)=>{
             res.status(200).json({isSign:false});
             return;
         }
-        res.status(200).json({isSign:true });
+        res.status(200).json({isSign:true ,ID:session});
         }catch (e){
         next(e)
     }

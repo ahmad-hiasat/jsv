@@ -7,7 +7,7 @@ function Home() {
     const [students, setStudents] = useState([]);
     const [filterValue, setFilterValue] = useState(0);
     const [isSigned, setIsSigned] = useState(null);
-
+    const [userID, setUserID] = useState(null);
     const [newName, setNewName] = useState("");
     const [newGpa, setNewGpa] = useState("");
     const [newId, setNewId] = useState("");
@@ -27,7 +27,7 @@ function Home() {
                 }
 
                 setIsSigned(true);
-
+                setUserID(signData.ID);
                 const readRes = await fetch(
                     "https://jsv-back-end.onrender.com/api/read",
                     { credentials: "include" }
@@ -66,6 +66,7 @@ function Home() {
                     studentName: newName,
                     studentGpa: Number(newGpa),
                     studentID: newId,
+                    userID:userID
                 }),
             }
         );
