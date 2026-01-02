@@ -7,7 +7,7 @@ router.get("/", async (req, res, next) => {
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        const userData = await data.find({ user: userId });
+        const userData = await data.find({ userID: userId });
         return res.status(200).json(userData);
     } catch (e) {
         next(e);
