@@ -19,6 +19,14 @@
     top: 50%;
     transform: translateY(-50%);
 }
+.router_name {
+    cursor: pointer;
+}
+
+.router_name:hover {
+    opacity: 0.8;
+}
+
 .router_name{
     color: white;
     display: inline-block;
