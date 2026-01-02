@@ -5,44 +5,64 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        alert('Login feature coming soon!');
+
+        try {
+            const response = await fetch(
+                'https://jsv-back-end.onrender.com/api/login',
+                {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email,
+                        password,
+                    }),
+                }
+            );
+
+            const data = await response.json();
+            alert(data.message);
+
+        } catch (err) {
+            console.error(err);
+            alert('Login failed');
+        }
     };
 
     return (
         <div className="login-container">
             <div className="login-box">
                 <h2>Login</h2>
+
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Email</label>
-                        <input 
-                            type="email" 
+                        <input
+                            type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Enter your email"
                             required
                         />
                     </div>
 
                     <div className="form-group">
                         <label>Password</label>
-                        <input 
-                            type="password" 
+                        <input
+                            type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter your password"
                             required
                         />
                     </div>
 
-                    <button type="submit" className="login-btn">Login</button>
+                    <button type="submit" className="login-btn">
+                        Login
+                    </button>
                 </form>
-                
-                <p className="register-link">
-                    Don't have an account? <a href="/register">Register here</a>
-                </p>
             </div>
         </div>
     );
