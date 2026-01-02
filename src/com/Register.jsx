@@ -17,7 +17,7 @@ function Register() {
 
         try {
             const res = await fetch(
-                'https://jsv-back-end.onrender.com/api/register',
+                'http://localhost:3001/api/register',
                 {
                     method: 'POST',
                     credentials: 'include',
