@@ -12,7 +12,7 @@ router.delete("/:id", async (req, res, next) => {
         const { id } = req.params;
         const deletedData = await data.findOneAndDelete({
             _id: id,
-            user: userId,
+            userID: userId,
         });
 
         if (!deletedData) {
