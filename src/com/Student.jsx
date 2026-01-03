@@ -7,7 +7,7 @@ function Student({ user, onDelete, onUpdate }) {
     const handleDelete = async () => {
         setLoading(true);
         const res = await fetch(
-            `https://jsv-back-end.onrender.com/api/delete/${user.student_id}`,
+            `https://jsv-back-end.onrender.com/api/delete/${user._id}`,
             {
                 method: "DELETE",
                 credentials: "include",
@@ -15,7 +15,7 @@ function Student({ user, onDelete, onUpdate }) {
         );
 
         if (res.ok) {
-            onDelete(user.student_id);
+            onDelete(user._id);
         }
         setLoading(false);
     };
@@ -23,33 +23,30 @@ function Student({ user, onDelete, onUpdate }) {
     const handleUpdate = async () => {
         const name = prompt("Student Name", user.name);
         const gpa = prompt("GPA", user.gpa);
-        const id = prompt("Student ID", user.student_id);
+        const studentId = prompt("Student ID", user.student_id);
 
-        if (!name || !gpa || !id) return;
+        if (!name || !gpa || !studentId) return;
 
         setLoading(true);
         const res = await fetch(
-            `https://jsv-back-end.onrender.com/api/update/${user.student_id}`,
+            `https://jsv-back-end.onrender.com/api/update/${user._id}`,
             {
                 method: "PUT",
                 credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     studentName: name,
                     studentGpa: Number(gpa),
-                    studentID: id,
+                    studentID: studentId,
                 }),
             }
         );
 
         if (res.ok) {
-            onUpdate(user.student_id, {
+            onUpdate(user._id, {
                 name,
                 gpa: Number(gpa),
-                student_id: id,
-                order: user.order,
+                student_id: studentId,
             });
         }
         setLoading(false);
@@ -63,18 +60,10 @@ function Student({ user, onDelete, onUpdate }) {
             <p>order : {user.order}</p>
 
             <div className="student-actions">
-                <button
-                    className="update-btn"
-                    onClick={handleUpdate}
-                    disabled={loading}
-                >
+                <button className="update-btn" onClick={handleUpdate} disabled={loading}>
                     update
                 </button>
-                <button
-                    className="delete-btn"
-                    onClick={handleDelete}
-                    disabled={loading}
-                >
+                <button className="delete-btn" onClick={handleDelete} disabled={loading}>
                     delete
                 </button>
             </div>

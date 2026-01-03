@@ -7,10 +7,9 @@ function Home() {
     const [students, setStudents] = useState([]);
     const [filterValue, setFilterValue] = useState(0);
     const [isSigned, setIsSigned] = useState(null);
-    const [userID, setUserID] = useState(null);
     const [newName, setNewName] = useState("");
     const [newGpa, setNewGpa] = useState("");
-    const [newId, setNewId] = useState("");
+    const [newStudentId, setNewStudentId] = useState("");
 
     useEffect(() => {
         const run = async () => {
@@ -19,15 +18,14 @@ function Home() {
                     "https://jsv-back-end.onrender.com/api/isSign",
                     { credentials: "include" }
                 );
-
                 const signData = await signRes.json();
+
                 if (!signData.isSign) {
                     setIsSigned(false);
                     return;
                 }
 
                 setIsSigned(true);
-                setUserID(signData.ID);
 
                 const readRes = await fetch(
                     "https://jsv-back-end.onrender.com/api/read",
@@ -36,10 +34,12 @@ function Home() {
 
                 const studentsData = await readRes.json();
 
-                const mapped = studentsData.map((s) => ({
+                const mapped = studentsData.map((s, index) => ({
+                    _id: s._id,
                     name: s.studentName,
                     gpa: s.studentGpa,
                     student_id: s.studentID,
+                    order: index + 1,
                 }));
 
                 setData(mapped);
@@ -53,29 +53,31 @@ function Home() {
     }, []);
 
     const addStudent = async () => {
-        if (!newName || !newGpa || !newId) return;
+        if (!newName || !newGpa || !newStudentId) return;
 
         const res = await fetch(
             "https://jsv-back-end.onrender.com/api/create",
             {
                 method: "POST",
                 credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     studentName: newName,
                     studentGpa: Number(newGpa),
-                    studentID: newId,
+                    studentID: newStudentId,
                 }),
             }
         );
 
+        const created = await res.json();
+
         if (res.ok) {
             const newStudent = {
-                name: newName,
-                gpa: Number(newGpa),
-                student_id: newId,
+                _id: created._id,
+                name: created.studentName,
+                gpa: created.studentGpa,
+                student_id: created.studentID,
+                order: data.length + 1,
             };
 
             setData([...data, newStudent]);
@@ -83,18 +85,22 @@ function Home() {
 
             setNewName("");
             setNewGpa("");
-            setNewId("");
+            setNewStudentId("");
         }
     };
 
-    const deleteStudent = (id) => {
-        setData(data.filter((s) => s.student_id !== id));
-        setStudents(students.filter((s) => s.student_id !== id));
+    const deleteStudent = (mongoId) => {
+        const filtered = data.filter((s) => s._id !== mongoId);
+        const reordered = filtered.map((s, i) => ({ ...s, order: i + 1 }));
+        setData(reordered);
+        setStudents(reordered);
     };
 
-    const updateStudent = (oldId, updated) => {
+    const updateStudent = (mongoId, updated) => {
         const update = (arr) =>
-            arr.map((s) => (s.student_id === oldId ? updated : s));
+            arr.map((s) =>
+                s._id === mongoId ? { ...s, ...updated } : s
+            );
 
         setData(update(data));
         setStudents(update(students));
@@ -117,13 +123,8 @@ function Home() {
 
     const reSet = () => setStudents(data);
 
-    if (isSigned === null) {
-        return <h2 className="students">Loading...</h2>;
-    }
-
-    if (!isSigned) {
-        return <h2 className="students">لازم تسجل دخول</h2>;
-    }
+    if (isSigned === null) return <h2 className="students">Loading...</h2>;
+    if (!isSigned) return <h2 className="students">لازم تسجل دخول</h2>;
 
     return (
         <>
@@ -142,8 +143,8 @@ function Home() {
                 />
                 <input
                     placeholder="Student ID"
-                    value={newId}
-                    onChange={(e) => setNewId(e.target.value)}
+                    value={newStudentId}
+                    onChange={(e) => setNewStudentId(e.target.value)}
                 />
                 <button onClick={addStudent}>Add Student</button>
             </div>
@@ -169,13 +170,12 @@ function Home() {
 
             <div className="students">
                 {students.map((user) => (
-                    <div key={user.student_id}>
-                        <Student
-                            user={user}
-                            onDelete={deleteStudent}
-                            onUpdate={updateStudent}
-                        />
-                    </div>
+                    <Student
+                        key={user._id}
+                        user={user}
+                        onDelete={deleteStudent}
+                        onUpdate={updateStudent}
+                    />
                 ))}
             </div>
         </>
