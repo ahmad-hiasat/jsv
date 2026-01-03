@@ -28,6 +28,7 @@ function Home() {
 
                 setIsSigned(true);
                 setUserID(signData.ID);
+
                 const readRes = await fetch(
                     "https://jsv-back-end.onrender.com/api/read",
                     { credentials: "include" }
@@ -84,6 +85,19 @@ function Home() {
             setNewGpa("");
             setNewId("");
         }
+    };
+
+    const deleteStudent = (id) => {
+        setData(data.filter((s) => s.student_id !== id));
+        setStudents(students.filter((s) => s.student_id !== id));
+    };
+
+    const updateStudent = (oldId, updated) => {
+        const update = (arr) =>
+            arr.map((s) => (s.student_id === oldId ? updated : s));
+
+        setData(update(data));
+        setStudents(update(students));
     };
 
     const sortAZ = () =>
@@ -156,7 +170,11 @@ function Home() {
             <div className="students">
                 {students.map((user) => (
                     <div key={user.student_id}>
-                        <Student user={user} />
+                        <Student
+                            user={user}
+                            onDelete={deleteStudent}
+                            onUpdate={updateStudent}
+                        />
                     </div>
                 ))}
             </div>
