@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./styles/NavBar.css";
 
 function NavBar() {
     const [isSigned, setIsSigned] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const checkSign = async () => {
@@ -21,7 +22,7 @@ function NavBar() {
         };
 
         checkSign();
-    }, []);
+    }, [location.pathname]);
 
     const signOut = async () => {
         await fetch("https://jsv-back-end.onrender.com/api/sing-out", {
@@ -62,8 +63,8 @@ function NavBar() {
                             </Link>
                         ) : (
                             <span onClick={item.action} className="router_name">
-                {item.name}
-              </span>
+                                {item.name}
+                            </span>
                         )}
                     </li>
                 ))}
