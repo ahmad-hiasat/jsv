@@ -21,7 +21,7 @@ router.put("/:id", async (req, res, next) => {
         const updatedData = await data.findOneAndUpdate(
             {
                 _id: id,
-                user: userId,
+                userID: userId,
             },
             {
                 $set: body,
