@@ -10,10 +10,10 @@ router.post('/' , async (req,res,next)=>{
     const body = req.body as {username:string , password:string};
     const user = await users.findOne({username:body.username})
     if(!user) {
-        return res.status(error.error('').status).json({status:400 , json:{message:'User not found'}});
+        return res.status(error.error('').status).json(error.error('no user found').json);
     }
     if(!await bcrypt.compare(body.password, user.password)) {
-        return res.status(error.error('').status).json({status:400 , json:{message:'password is invalid'}});
+        return res.status(error.error('').status).json(error.error('worng password').json);
     }else{
         (req.session as any).userId = user._id;
         return res.status(successfully.done('').status).json(successfully.done('done sign in').json);
