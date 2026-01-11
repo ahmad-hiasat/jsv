@@ -11,7 +11,7 @@ const schema = new mongoose.Schema({
         type:String,
         required:true,
     },email:{
-        type:Stirng,
+        type:String,
         minlength : 5,
         unique:true
     }
